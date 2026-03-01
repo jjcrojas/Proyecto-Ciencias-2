@@ -564,6 +564,11 @@ if (base.getColisiones() != null && !base.getColisiones().isEmpty()) {
          * Retorna true si la pudo ubicar, false si la tabla está llena o no encontró hueco.
          */
         private boolean reubicarPorProbing(String claveTxt, String estrategia) {
+            // Evita insertar duplicados si la clave ya fue ubicada antes.
+            if (existeClaveEnTabla(claveTxt)) {
+                return true;
+            }
+
             int start = hashBase(claveTxt);
 
             // Si el slot base está vacío, va directo
@@ -594,6 +599,11 @@ if (base.getColisiones() != null && !base.getColisiones().isEmpty()) {
                 }
             }
             return false;
+        }
+
+        /** Verifica si la clave ya está ocupando algún slot principal de la tabla. */
+        private boolean existeClaveEnTabla(String claveTxt) {
+            return data.stream().anyMatch(slot -> claveTxt.equals(slot.getClave()));
         }
 
     private void limpiarBusqueda() {
